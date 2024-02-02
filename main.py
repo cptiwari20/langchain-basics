@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains import LLMChain, SequentialChain
 import argparse
 from dotenv import load_dotenv
 
@@ -21,15 +21,34 @@ prompt_template = PromptTemplate(
     input_variables= ["language", "task"]
 )
 
-new_chain = LLMChain(
+test_template = PromptTemplate(
+    template="Write a very simple {language} test code for the {code}",
+    input_variables= ["language", "code"]
+)
+
+first_chain = LLMChain(
     prompt=prompt_template,
     llm=llm,
     output_key="code"
 )
+second_chain = LLMChain(
+    prompt=test_template,
+    llm=llm,
+    output_key="test"
+)
 
-result = new_chain({
+chain = SequentialChain(
+    chains=[first_chain, second_chain],
+    input_variables=['language', 'task'],
+    output_variables=['code', 'test']
+)
+
+result = chain({
     "language": args.language,
     "task": args.task
 })
 
-print(result)
+print('>>> CODE Generated <<<<')
+print(result['code'])
+print('>>> Test Generated <<<<')
+print(result['test'])
