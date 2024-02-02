@@ -13,22 +13,23 @@ args = parser.parse_args()
 
 llm = ChatOpenAI()
 
-print("Finding Answer, please wait...")
-result = llm.invoke("how can langsmith help with testing?")
+print("Finding Answer for {{args.task}}, please wait...")
+# result = llm.invoke("how can langsmith help with testing?")
 
 prompt_template = PromptTemplate(
-    template="Write a code in {language} where you have to {task}",
+    template="Write a very simple {language} funtion that will {task}",
     input_variables= ["language", "task"]
 )
 
 new_chain = LLMChain(
     prompt=prompt_template,
-    llm=llm
+    llm=llm,
+    output_key="code"
 )
 
 result = new_chain({
-    "language": "JavaScript",
-    "task": "Write a number from 1 to 10"
+    "language": args.language,
+    "task": args.task
 })
 
 print(result)
