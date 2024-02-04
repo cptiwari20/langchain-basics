@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-chat = ChatOpenAI()
+chat = ChatOpenAI(verbose=True)
 
 # memory = ConversationBufferMemory(
 #     chat_memory=FileChatMessageHistory('message.json'), #this will store the history in file
@@ -33,7 +33,8 @@ prompt = ChatPromptTemplate(
 chain = LLMChain(
     llm=chat,
     prompt=prompt,
-    memory=memory 
+    memory=memory,
+    verbose=True
 )
 
 print("Please ask whatever you want to ask with the OpenAI Chatbot!")
