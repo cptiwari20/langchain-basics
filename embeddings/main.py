@@ -3,6 +3,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
+import chromadb
 
 load_dotenv()
 
@@ -22,9 +23,11 @@ docs = loader.load_and_split(
     text_splitter=text_splitter
 )
 
+# new_client = chromadb.EphemeralClient()
 db = Chroma.from_documents(
     docs,
-    embedding_function=embeddings,
+    # client=new_client,
+    embedding=embeddings,
     persist_directory='emb'
 )
 
