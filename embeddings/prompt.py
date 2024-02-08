@@ -1,6 +1,7 @@
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.chains import RetrievalQA
+from redundant_filter_retriever import RedundantFilterRetriever
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +14,10 @@ db = Chroma(
     embedding_function=embeddings
 )
 
+# retriever = RedundantFilterRetriever(
+#     embeddings=embeddings,
+#     chroma=db
+# )
 retriever = db.as_retriever()  # for the Retrieval QA for managing the multuple databases, it maps with the relevent retrival method of the database.
 
 chain = RetrievalQA.from_chain_type(
@@ -22,7 +27,7 @@ chain = RetrievalQA.from_chain_type(
     #other chain types are - refine, mapReduce,mapRerank
 )
 
-result = chain.invoke("Tell me interesting facts about the English")
+result = chain.run("Tell me interesting facts about the English")
 print(result)
 
 
