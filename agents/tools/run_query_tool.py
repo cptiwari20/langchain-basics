@@ -3,6 +3,13 @@ from langchain.tools import Tool
 
 conn = sqlite3.connect("db.sqlite")
 
+def get_tables():
+    c = conn.cursor()
+    c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    rows = c.fetchall()
+    return "\n".join(row[0] for row in rows)
+
+
 def run_sqlite_query(query):
     try:
         c = conn.cursor()
