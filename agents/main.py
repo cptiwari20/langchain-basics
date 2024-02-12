@@ -1,17 +1,19 @@
 from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, OpenAIFunctionsAgent
 from langchain.prompts import (
-    PromptTemplate,
+    ChatPromptTemplate,
     MessagesPlaceholder,
     HumanMessagePromptTemplate
 )
 from dotenv import load_dotenv
 
+from tools.run_query_tool import run_query_tool
+
 load_dotenv()
 
 chat = ChatOpenAI()
 
-prompt = PromptTemplate(
+prompt = ChatPromptTemplate(
     messages=[
         HumanMessagePromptTemplate.from_template("{input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad") 
@@ -22,13 +24,13 @@ prompt = PromptTemplate(
 agent = OpenAIFunctionsAgent(
     llm=chat,
     prompt=prompt,
-    tools=[]
+    tools=[run_query_tool]
 )
 
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=[],
+    tools=[run_query_tool],
     verbose=True #for printing the output in detail
 )
 
-agent_executor("What is the database?")
+agent_executor("How many users record in the databse?")
