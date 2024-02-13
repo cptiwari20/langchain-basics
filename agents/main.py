@@ -8,7 +8,7 @@ from langchain.prompts import (
 from langchain.schema import SystemMessage
 from dotenv import load_dotenv
 
-from tools.run_query_tool import run_query_tool, get_tables
+from tools.sql import run_query_tool, get_tables, run_describe_tables
 
 load_dotenv()
 
@@ -17,7 +17,14 @@ chat = ChatOpenAI()
 tables = get_tables()
 prompt = ChatPromptTemplate(
     messages=[
-        SystemMessage(content=f"Assume you are using sqlite database with tables ={str(tables)}"),
+        SystemMessage(content=(
+            "Assume you are using sqlite database with tables "
+            f"The database has table names of: {tables}\n"
+            "Do not make any assumption what table name exists "
+            "or what column exists; Instead use 'describe_table' function tool"
+
+            )
+        ),
         HumanMessagePromptTemplate.from_template("{input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad") 
         #agent_scratchpad is a kind of memory that is comping from the function call by the agents
@@ -27,13 +34,13 @@ prompt = ChatPromptTemplate(
 agent = OpenAIFunctionsAgent(
     llm=chat,
     prompt=prompt,
-    tools=[run_query_tool]
+    tools=[run_query_tool, run_describe_tables]
 )
 
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=[run_query_tool],
+    tools=[run_query_tool, run_describe_tables],
     verbose=True #for printing the output in detail
 )
 
-agent_executor("How many shipping addresses in database?")
+agent_executor("Does user have one or more shipping addresses each?")
