@@ -9,6 +9,7 @@ from langchain.schema import SystemMessage
 from dotenv import load_dotenv
 
 from tools.sql import run_query_tool, get_tables, run_describe_tables
+from tools.report import write_report_tool
 
 load_dotenv()
 
@@ -31,18 +32,18 @@ prompt = ChatPromptTemplate(
     ]
 )
 
-tools = [run_query_tool, run_describe_tables]
-print(tools)
-# agent = OpenAIFunctionsAgent(
-#     llm=chat,
-#     prompt=prompt,
-#     tools=tools
-# )
+tools = [run_query_tool, run_describe_tables, write_report_tool]
+# print(tools)
+agent = OpenAIFunctionsAgent(
+    llm=chat,
+    prompt=prompt,
+    tools=tools
+)
 
-# agent_executor = AgentExecutor(
-#     agent=agent,
-#     tools=tools,
-#     verbose=True #for printing the output in detail
-# )
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True #for printing the output in detail
+)
 
-# agent_executor("Does user have one or more shipping addresses each?")
+agent_executor("How many products are there in th database, generate a report for this with pricing.")
