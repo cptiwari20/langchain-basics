@@ -31,16 +31,18 @@ prompt = ChatPromptTemplate(
     ]
 )
 
-agent = OpenAIFunctionsAgent(
-    llm=chat,
-    prompt=prompt,
-    tools=[run_query_tool, run_describe_tables]
-)
+tools = [run_query_tool, run_describe_tables]
+print(tools)
+# agent = OpenAIFunctionsAgent(
+#     llm=chat,
+#     prompt=prompt,
+#     tools=tools
+# )
 
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=[run_query_tool, run_describe_tables],
-    verbose=True #for printing the output in detail
-)
+# agent_executor = AgentExecutor(
+#     agent=agent,
+#     tools=tools,
+#     verbose=True #for printing the output in detail
+# )
 
-agent_executor("Does user have one or more shipping addresses each?")
+# agent_executor("Does user have one or more shipping addresses each?")
