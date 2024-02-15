@@ -11,10 +11,14 @@ from dotenv import load_dotenv
 
 from tools.sql import run_query_tool, get_tables, run_describe_tables
 from tools.report import write_report_tool
+from handlers.chat_model_start_handler import HandleChatModelStart
 
 load_dotenv()
 
-chat = ChatOpenAI()
+handler = HandleChatModelStart()
+chat = ChatOpenAI(
+    callbacks=[handler]
+)
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
 tables = get_tables()
@@ -47,7 +51,7 @@ agent_executor = AgentExecutor(
     agent=agent,
     tools=tools,
     memory=memory,
-    verbose=True #for printing the output in detail
+   # verbose=True #for printing the output in detail
 )
 
 agent_executor("How many products are there in th database?")
